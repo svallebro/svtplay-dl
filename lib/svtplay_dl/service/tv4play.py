@@ -42,7 +42,7 @@ class Tv4play(Service, OpenGraphThumbMixin):
             return
 
         vid = jansson["props"]["pageProps"]["assetId"]
-        janson2 = jansson["props"]["apolloState"]
+        janson2 = jansson["props"]["pageProps"]["initialApolloState"]
         item = janson2["VideoAsset:{}".format(vid)]
 
         if item["is_drm_protected"]:
@@ -80,7 +80,7 @@ class Tv4play(Service, OpenGraphThumbMixin):
                 yield streams[n]
 
     def _getjson(self):
-        match = re.search(r"application\/json\">(.*\}\})<\/script><script ", self.get_urldata())
+        match = re.search(r"application\/json\">(.*\})<\/script><script ", self.get_urldata())
         return match
 
     def find_all_episodes(self, config):
@@ -89,7 +89,7 @@ class Tv4play(Service, OpenGraphThumbMixin):
         show = None
         match = self._getjson()
         jansson = json.loads(match.group(1))
-        janson2 = jansson["props"]["apolloState"]
+        janson2 = jansson["props"]["pageProps"]["initialApolloState"]
         for i in janson2:
             if "VideoAsset:" in i:
                 if janson2[i]["clip"] and config.get("include_clips"):
